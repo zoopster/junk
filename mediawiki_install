@@ -3,12 +3,22 @@ MediaWiki Install
 LEAP15
 
 Prerequisites
+webserver
+php7
+php7-fpm
+php7-fileinfo
+php7-mbstring
 postgresql-server
 
 Postgres setup
 su - postgres
 createuser -S -D -R -P -E wikiuser
   use 3therpass as password
+createdb -O wikiuser wikidb
+
+php7-fpm setup
+nginx setup
+
 
 Install link
 wget https://releases.wikimedia.org/mediawiki/1.31/mediawiki-1.31.1.tar.gz
