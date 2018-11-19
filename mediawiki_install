@@ -1,0 +1,14 @@
+MediaWiki Install
+
+LEAP15
+
+Prerequisites
+postgresql-server
+
+Postgres setup
+su - postgres
+createuser -S -D -R -P -E wikiuser
+  use 3therpass as password
+
+Install link
+wget https://releases.wikimedia.org/mediawiki/1.31/mediawiki-1.31.1.tar.gz

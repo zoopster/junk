@@ -1,0 +1,17 @@
+Installing Etherpad-lite - LEAP 15
+
+Config network (switch to wicked)
+Open firewall
+Add etherpad user (passwd 3therpass)
+
+zypper in -t pattern devel_python3
+zypper in nodejs
+
+Add database
+zypper in postgresql
+
+
+git clone https://github.com/ether/etherpad-lite etherpad-lite
+
+settings.json
+uncomment "users: admin" lines
