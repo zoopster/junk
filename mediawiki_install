@@ -1,24 +1,51 @@
-MediaWiki Install
+MediaWiki Install for SE Training - Sales Summit 2018
 
-LEAP15
+SLES15
 
 Prerequisites
-webserver
-php7
+sle-module-web-scripting
+sle-module-desktop-applications
+
+nginx
+ImageMagick
 php7-fpm
 php7-fileinfo
 php7-mbstring
 postgresql-server
+git-core
+libopenssl-devel
+vim
 
 Postgres setup
+systemctl enable postgresql
+systemctl start postgresql
 su - postgres
 createuser -S -D -R -P -E wikiuser
   use 3therpass as password
 createdb -O wikiuser wikidb
+change /var/lib/psgl/pg_hba.conf
+  ipv4 local connections line
+    host all all 127.0.0.1/32 trust
+
 
 php7-fpm setup
+cd /etc/php7/fpm
+cp /etc/php7/fpm/php-fpm-conf.default /etc/php7/fpm/php-fpm.conf
+cp /etc/php7/fpm/php-fpm.d/www.conf.default /etc/php7/fpm/php-fpm.d/www.conf
+cp /etc/php7/cli/php.ini /etc/php7/conf.d/php.ini
+
 nginx setup
+  use /etc/nginx/
 
 
 Install link
 wget https://releases.wikimedia.org/mediawiki/1.31/mediawiki-1.31.1.tar.gz
+Mediawiki setup
+db is at 127.0.0.1
+wikiuser
+wikidb
+
+Services startup
+php-fpm
+postgresql
+nginx
