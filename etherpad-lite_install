@@ -4,6 +4,7 @@ Config network (switch to wicked)
 Open firewall
 Add etherpad user (passwd 3therpass)
 
+
 zypper in -t pattern devel_python3
 zypper in nodejs
 
@@ -13,5 +14,6 @@ zypper in postgresql
 
 git clone https://github.com/ether/etherpad-lite etherpad-lite
 
-settings.json
+
+cp settings.json.template settings.json
 uncomment "users: admin" lines

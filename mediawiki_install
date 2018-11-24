@@ -9,6 +9,7 @@ sle-module-desktop-applications
 nginx
 ImageMagick
 php7-fpm
+php7-pgsql
 php7-fileinfo
 php7-mbstring
 postgresql-server
@@ -33,9 +34,13 @@ cd /etc/php7/fpm
 cp /etc/php7/fpm/php-fpm-conf.default /etc/php7/fpm/php-fpm.conf
 cp /etc/php7/fpm/php-fpm.d/www.conf.default /etc/php7/fpm/php-fpm.d/www.conf
 cp /etc/php7/cli/php.ini /etc/php7/conf.d/php.ini
+edit /etc/php7/php-fpm.d/www.conf
+  change user = nobody to user = wwwrun (what the /var/lib/php7 folder is)
 
 nginx setup
   use /etc/nginx/
+  cp nginx_mediawiki.conf /etc/nginx/vhosts.d/.
+  comment out server line in /etc/nginx/nginx.conf
 
 
 Install link
