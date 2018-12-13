@@ -3,13 +3,17 @@ Installing Etherpad-lite - LEAP 15
 Config network (switch to wicked)
 Open firewall
 Add etherpad user (passwd 3therpass)
-
+groupadd etherpad
 
 zypper in -t pattern devel_python3
 zypper in nodejs
 
 Add database
+
 zypper in postgresql
+createuser -S -D -R -P -E etherpaduser
+  use 3therpass as password
+createdb -O etherpaduser etherpaddb
 
 
 git clone https://github.com/ether/etherpad-lite etherpad-lite
@@ -17,3 +21,8 @@ git clone https://github.com/ether/etherpad-lite etherpad-lite
 
 cp settings.json.template settings.json
 uncomment "users: admin" lines
+
+cp etherpad.service /home/etherpad/etherpad-lite/.
+ln -s /home/etherpad/etherpad-lite/etherpad.service /etc/systemd/system/etherpad.service
+
+Download etherpadlite extension for MediaWiki
