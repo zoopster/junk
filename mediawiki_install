@@ -9,7 +9,7 @@ sle-module-desktop-applications
 nginx
 ImageMagick
 php7-fpm
-php7-pgsql
+fphp7-pgsql
 php7-fileinfo
 php7-mbstring
 postgresql-server
