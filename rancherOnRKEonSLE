@@ -1,18 +1,20 @@
 #2 nodes running
 #setup rke on 1
-#   SLE15SP2
+#   SLE15SP2 started with JeOS
+# to do - use CLOUD image and cloud init
 #logged in as root
-#    register
- SUSEConnect -r
-    zypper in wget which sudo docker
-    zypper in -t pattern yast2_basis
-    yast2 users add username=tux password=linux
-    ssh-keygen -b 2048 -t rsa -f /home/tux/.ssh/id_rsa -N “"
-    cat /home/tux/.ssh/id_rsa.pub >> /home/tux/.ssh/authorized_keys
-     usermod -aG docker tux
+#    register, install needed packages, setup tux user, generate key, fix docker
+ SUSEConnect -r &{REGCODE}
+ zypper in wget which sudo docker
+ zypper in -t pattern yast2_basis
+ yast2 users add username=tux password=linux
+ ssh-keygen -b 2048 -t rsa -f /home/tux/.ssh/id_rsa -N “"
+ cat /home/tux/.ssh/id_rsa.pub >> /home/tux/.ssh/authorized_keys
+ usermod -aG docker tux
+
 #LOGOUT
 #log in as tux
-    sudo systemctl enable —now docker
+ sudo systemctl enable —now docker
 
 #test with docker ps
  docker ps
@@ -25,7 +27,7 @@ firewall-cmd --reload
 # Open TCP/6443 for one specific IP
 firewall-cmd --permanent --zone=public --add-rich-rule='
   rule family="ipv4"
-  source address="your_ip_here/32"
+  source address="${nodeIP}"
   port protocol="tcp" port="6443" accept'
 firewall-cmd --reload
 
@@ -86,9 +88,8 @@ helm install rancher rancher-latest/rancher \
   --set hostname=<reachable hostname>
   --set replicas=1
 
-
 #verify it’s ready
-while true; do curl -kv https://rancher.blablah.net 2>&1 | grep -q "dynamiclistener-ca"; if [ $? != 0 ]; then echo "Rancher isn't ready yet"; sleep 5; continue; fi; break; done; echo "Rancher is Ready”;
+while true; do curl -kv https://{RancherFQDN} 2>&1 | grep -q "dynamiclistener-ca"; if [ $? != 0 ]; then echo "Rancher isn't ready yet"; sleep 5; continue; fi; break; done; echo "Rancher is Ready”;
 
 #Add cluster to Rancher to be managed (workload cluster)
 #Login to rancher UI
@@ -98,10 +99,10 @@ while true; do curl -kv https://rancher.blablah.net 2>&1 | grep -q "dynamicliste
     * Note the multiple types of Kubernetes cluster Rancher supports. We will be using Custom for this lab, but there are a lot of possibilities with Rancher.
 3. Click on the From existing nodes (Custom) Cluster box
 4. Enter a name in the Cluster Name box
-5. Set the Kubernetes Version to a v1.16 version
+5. Set the Kubernetes Version
 6. Click Next at the bottom.
-7. Make sure the boxes etcd, Control Plane, and Worker are all ticked.
+7. Make sure at least 1 ofthe boxes etcd, Control Plane, and Worker are ticked.
 8. Click Show advanced options to the bottom right of the Worker checkbox
-9. Enter the Public Address (3.15.192.26) and Internal Address (172.31.4.100)
+9. Enter the Public Address () and Internal Address ()
     * IMPORTANT: It is VERY important that you use the correct External and Internal addresses from the Cluster01 machine for this step, and run it on the correct machine. Failure to do this will cause the future steps to fail.
 10. Click the clipboard to Copy to Clipboard the docker run command
