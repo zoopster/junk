@@ -1,0 +1,49 @@
+# Need a fresh SLE15 SPx install
+# This example uses a RMT setup
+# RMT uses /var/lib/rmt in it's nginx vhost setup
+
+# install tftp
+sudo zypper in tftp
+
+# install boot files - find all versions with 'sudo zypper se tftpboot'
+sudo zypper in tftpboot-installation-SLE-OS_VERSION-ARCH
+# this *should* install files into /srv/tftpboot if not look in /usr/share/tftpboot-installation/
+# use the /srv/tftpboot-SLE-OS_VERSION-ARCH/net/pxelinux.cfg/default and config it
+
+# mount the ISO
+mount -o loop ${pathtoiso} ${pathtoexistingmountdir}
+
+# copy the files
+cp -R ${pathtoexistingmountdir} /var/lib/rmt/public/repo/SUSE/Install/15spx <--whereever you have the install option pointing
+
+# copy the kernel and initrd
+cp ${pathtoexistingmountdir}/boot/x86_64/loader/linux /srv/tftpboot/15spx <--whereever you have the kernel/initrd option pointing
+cp ${pathtoexistingmountdir}/boot/x86_64/loader/initrd /srv/tftpboot/15spx <--whereever you have the kernel/initrd option pointing
+
+### END OF tftpboot setup
+### BEGIN example pxelinux.cfg/default
+# example pxelinux.cfg file for a specific mac addr
+default vesamenu.c32
+#default harddisk
+timeout 100
+
+menu title PXE Install Server
+
+label harddisk
+  menu label Local Hard Disk
+  localboot 0
+
+label install-52:54:00:ca:10:01
+  menu label install-52:54:00:ca:10:01 (worker10)
+  kernel SLE15sp1/linux
+  append load_ramdisk=1 initrd=SLE15sp1/initrd netsetup=dhcp hostname=worker10 install=http://192.168.110.2/repo/SUSE/Install/15sp1/x86_64
+
+label install-52:54:00:ca:10:01
+  menu label install-52:54:00:ca:10:01 (worker10-sp2)
+  kernel SLE15sp2/linux
+  append load_ramdisk=1 initrd=SLE15sp2/initrd netsetup=dhcp hostname=worker10 install=http://192.168.110.2/repo/SUSE/Install/15sp2/x86_64
+
+label install-52:54:00:ca:10:01
+  menu label install-52:54:00:ca:10:01 (worker10- Autoyast)
+  kernel SLE15sp1/linux
+  append load_ramdisk=1 initrd=SLE15sp1/initrd netsetup=dhcp hostname=worker10 autoyast=http://192.168.110.2/repo/autoyast.xml install=http://192.168.110.2/repo/SUSE/Install/15sp1/x86_64
