@@ -15,8 +15,9 @@ set -x
 source env.sh
 
 #create a cluster
-eksctl create cluster --name kubecf --version 1.15 \
+eksctl create cluster --name kubecf \
 --nodegroup-name standard-workers --node-type $NODE_TYPE \
 --nodes $NODE_NUM --node-volume-size 80 \
 --region $REGION --managed \
+--zones us-east-1c,us-east-1d,us-east-1f \
 --ssh-access --ssh-public-key $SSH_KEY

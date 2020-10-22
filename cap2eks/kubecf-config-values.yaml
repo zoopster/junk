@@ -1,0 +1,7 @@
+system_domain: cap2eks.net
+
+credentials:
+  cf_admin_password: Demo1234
+  uaa_admin_client_secret: Demo1234
+
+
