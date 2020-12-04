@@ -1,9 +1,10 @@
-#2 nodes running
-#setup rke on 1
-#   SLE15SP2 started with JeOS
-# to do - use CLOUD image and cloud init
-#logged in as root
-#    register, install needed packages, setup tux user, generate key, fix docker
+### 2 nodes running
+##### setup rke on 1
+#####   SLE15SP2 started with JeOS
+###### to do - use CLOUD image and cloud init
+##### logged in as root
+#####    register, install needed packages, setup tux user, generate key, fix docker
+ ```
  SUSEConnect -r &{REGCODE}
  zypper in wget which sudo docker
  zypper in -t pattern yast2_basis
@@ -11,42 +12,53 @@
  ssh-keygen -b 2048 -t rsa -f /home/tux/.ssh/id_rsa -N “"
  cat /home/tux/.ssh/id_rsa.pub >> /home/tux/.ssh/authorized_keys
  usermod -aG docker tux
+```
+##### LOGOUT
+##### log in as tux
+```
+sudo systemctl enable —now docker
+```
 
-#LOGOUT
-#log in as tux
- sudo systemctl enable —now docker
+##### test with docker ps
+```
+docker ps
+```
 
-#test with docker ps
- docker ps
-
-#firewall config - could do this in yast
-# Open TCP/6443 for all
+##### firewall config - could do this in yast
+##### Open TCP/6443 for all
+```
 firewall-cmd --zone=public --add-port=6443/tcp --permanent
 firewall-cmd --reload
+```
 
-# Open TCP/6443 for one specific IP
-firewall-cmd --permanent --zone=public --add-rich-rule='
-  rule family="ipv4"
-  source address="${nodeIP}"
-  port protocol="tcp" port="6443" accept'
+##### Open TCP/6443 for one specific IP
+```
+firewall-cmd --permanent --zone=public --add-rich-rule='rule family="ipv4" source address="${nodeIP}" port protocol="tcp" port="6443" accept'
 firewall-cmd --reload
+```
 
-
-#    download rke & copy to local path
-  sudo wget -O /usr/local/bin/rke https://github.com/rancher/rke/releases/latest/download/rke_linux-amd64
-  sudo chmod +x /usr/local/bin/rke
-#    install kubectl <--specific to 1.18
-  sudo curl -LO "https://storage.googleapis.com/kubernetes-release/release/v1.18/bin/linux/amd64/kubectl"
-  mv kubectl /usr/local/bin && chmod +x /usr/local/bin/kubectl
-# or install latest kubectl (should be backwards compatible to -3 releases)
-  #curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
-#    install helm3
-    sudo wget -O helm.tar.gz https://get.helm.sh/helm-v3.3.0-linux-amd64.tar.gz
-    tar -zxvf helm.tar.gz
-    mv linux-amd64/helm /usr/local/bin && chmod +x helm
-
-#    create cluster.yml
-cat <<EOF> cluster.yml
+#####    download rke & copy to local path
+```
+sudo wget -O /usr/local/bin/rke https://github.com/rancher/rke/releases/latest/download/rke_linux-amd64
+sudo chmod +x /usr/local/bin/rke
+```
+####    install kubectl <--specific to 1.18
+```
+sudo curl -LO "https://storage.googleapis.com/kubernetes-release/release/v1.18/bin/linux/amd64/kubectl" 
+mv kubectl /usr/local/bin && chmod +x /usr/local/bin/kubectl
+```
+#### or install latest kubectl (should be backwards compatible to -3 releases)
+```
+curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
+```
+#####    install helm3 v3.4.0 <--check https://github.com/helm/helm/releases/latest for the latest release
+```
+sudo wget -O helm.tar.gz https://get.helm.sh/helm-v3.4.1-linux-amd64.tar.gz
+tar -zxvf helm.tar.gz
+mv linux-amd64/helm /usr/local/bin && chmod +x helm
+```
+####    create cluster.yml
+```cat <<EOF> cluster.yml
 nodes:
   - address: ${nodeIP}
     user: tux
@@ -55,44 +67,54 @@ nodes:
       - etcd
       - worker
 EOF
-
-# run rke install
+```
+##### run rke install
+```
 rke up --config cluster.yml
-# symlink kubeconfig
+```
+#### symlink kubeconfig
+```
 mkdir /home/tux/.kube
 ln -s /home/tux/kube_config_rancher-cluster.yml /home/tux/.kube/config
+chmod 600 /home/tux/.kube/config
+```
 
-#install cert-manager
+#### install cert-manager
+```
 kubectl create namespace cert-manager
-kubectl apply --validate=false -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.12/deploy/manifests/00-crds.yaml
-
 helm repo add jetstack https://charts.jetstack.io
 helm repo update
 helm install \
   cert-manager --namespace cert-manager \
-  --version v0.12.0 \
+  --version v1.0.4 \
+  --set installCRDs=true \
   jetstack/cert-manager
-
-#verify rollout
+```
+#### verify rollout
+```
 kubectl -n cert-manager rollout status deploy/cert-manager-webhook
 kubectl -n cert-manager rollout status deploy/cert-manager
-
-#add rancher-latest repo
+```
+#### add rancher-latest repo
+```
 helm repo add rancher-latest https://releases.rancher.com/server-charts/latest
 helm repo update
+```
 
-#setup ns and install rancher server
+#### setup ns and install rancher server
+```
 kubectl create namespace cattle-system
 helm install rancher rancher-latest/rancher \
   --namespace cattle-system \
   --set hostname=<reachable hostname>
   --set replicas=1
-
-#verify it’s ready
+```
+#### verify it’s ready
+```
 while true; do curl -kv https://{RancherFQDN} 2>&1 | grep -q "dynamiclistener-ca"; if [ $? != 0 ]; then echo "Rancher isn't ready yet"; sleep 5; continue; fi; break; done; echo "Rancher is Ready”;
-
-#Add cluster to Rancher to be managed (workload cluster)
-#Login to rancher UI
+```
+### Add cluster to Rancher to be managed (workload cluster)
+####Login to rancher UI
 1. Hover over the top left dropdown, then click Global
 2. Click Add Cluster
     * The current context is shown in the upper left, and should say 'Global'
