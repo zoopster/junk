@@ -44,7 +44,7 @@ sudo chmod +x /usr/local/bin/rke
 ```
 ####    install kubectl <--specific to 1.18
 ```
-sudo curl -LO "https://storage.googleapis.com/kubernetes-release/release/v1.18/bin/linux/amd64/kubectl" 
+sudo curl -LO "https://storage.googleapis.com/kubernetes-release/release/v1.18/bin/linux/amd64/kubectl"
 mv kubectl /usr/local/bin && chmod +x /usr/local/bin/kubectl
 ```
 #### or install latest kubectl (should be backwards compatible to -3 releases)
@@ -56,9 +56,12 @@ curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s ht
 sudo wget -O helm.tar.gz https://get.helm.sh/helm-v3.4.1-linux-amd64.tar.gz
 tar -zxvf helm.tar.gz
 mv linux-amd64/helm /usr/local/bin && chmod +x helm
+ - or -
+curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 ```
 ####    create cluster.yml
-```cat <<EOF> cluster.yml
+```
+cat <<EOF> cluster.yml
 nodes:
   - address: ${nodeIP}
     user: tux
