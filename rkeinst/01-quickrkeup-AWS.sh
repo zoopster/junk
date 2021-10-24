@@ -15,7 +15,7 @@ sudo usermod -aG docker ec2-user
 
 # Download RKE
 sudo wget -O /usr/local/bin/rke \
-https://github.com/rancher/rke/releases/download/v1.2.1/rke_linux-amd64
+https://github.com/rancher/rke/releases/download/v1.3.1/rke_linux-amd64
 sudo chmod +x /usr/local/bin/rke
 
 # Download kubectl
