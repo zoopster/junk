@@ -1,0 +1,41 @@
+#quickly spin up rancher on k3s
+#drop in to /var/lib/rancher/k3s/server/manifests
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cert-manager
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cattle-system
+---
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  namespace: kube-system
+  name: cert-manager
+spec:
+  targetNamespace: cert-manager
+  version: v1.6.1
+  chart: cert-manager
+  repo: https://charts.jetstack.io
+  set:
+    installCRDs: "true"
+---
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: rancher
+  namespace: kube-system
+spec:
+  targetNamespace: cattle-system
+  version: v2.6.3
+  chart: rancher
+  repo: https://releases.rancher.com/server-charts/latest
+  set:
+    ingress.tls.source: "rancher"
+    hostname: "dev01"
+    antiAffinity: "required"
+    replicas: 1
