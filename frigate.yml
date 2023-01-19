@@ -1,0 +1,57 @@
+# yaml-language-server: $schema=http://frigate:5000/api/config/schema
+mqtt:
+        host: 192.168.50.102
+
+detectors:
+        cpu1:
+                type: cpu
+        cpu2:
+                type: cpu
+
+detect:
+    enabled: true
+objects:
+    track:
+        - person
+        - dog
+        - cat
+        - car
+snapshots:
+    enabled: true
+    timestamp: true
+    bounding_box: true
+    retain:
+        default: 7
+#clips:
+#     enabled: true
+
+record:
+    enabled: true
+    retain_days: 2
+rtmp:
+    enabled: true
+cameras:
+    backyard:
+        ffmpeg:
+            inputs:
+                - path: rtsp://admin:cu2inr9t@192.168.50.219
+                  roles:
+                    - detect
+                    - record
+                    - rtmp
+    se_corner:
+        ffmpeg:
+            inputs:
+                - path: rtsp://admin:cu2inr9t@192.168.50.220
+                  roles:
+                    - detect
+                    - record
+                    - rtmp
+    driveway:
+        ffmpeg:
+            inputs:
+                - path: rtsp://admin:cu2inr9t@192.168.50.221
+                  roles:
+                    - detect
+                    - record
+                    - rtmp

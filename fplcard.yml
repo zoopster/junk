@@ -1,0 +1,36 @@
+cards:
+  - card:
+      entities:
+        - entity: sensor.fpl_***_as_of_days
+          entity_row: true
+          max: '${ vars[0] }'
+          name: Days
+          positions:
+            icon: 'off'
+            indicator: 'off'
+            minmax: inside
+            title: inside
+            value: inside
+          severity:
+            - color: Green
+              from: 0
+              to: '${ vars[0] * 0.5 }'
+            - color: Yellow
+              from: '${ vars[0] * 0.5 + 1}'
+              to: '${ vars[0] * 0.80 }'
+            - color: Red
+              from: '${ vars[0] * 0.80 + 1}'
+              to: '${ vars[0] }'
+          style: 'ha-card{border-radius: 0;}'
+          type: 'custom:bar-card'
+      title: FPL
+      type: entities
+    entities:
+      - sensor.fpl_***_as_of_days
+    type: 'custom:config-template-card'
+    variables:
+      - 'states[''sensor.fpl_***_service_days''].state'
+  - entity: sensor.fpl_***_projected_bill
+    name: Projected Bill
+    type: entity
+type: 'custom:vertical-stack-in-card'
