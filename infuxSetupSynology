@@ -1,0 +1,11 @@
+https://gh2home.nl/synology/setting-up-influxdb-using-docker/
+
+https://www.home-assistant.io/integrations/influxdb/
+
+use influx setup to setup org user password etc
+
+'''influx setup'''
+hassuser
+hasspasswd
+HASS for the org
+hass_bucket for the bucket 
