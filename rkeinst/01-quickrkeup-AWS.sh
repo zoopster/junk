@@ -2,7 +2,8 @@
 set -x
 
 # assumption - ec2-user is the default user
-
+# export user = ec2-user
+# export rancher_ver = 
 #sudo hostnamectl set-hostname rancher1
 #sudo reboot
 
@@ -15,7 +16,7 @@ sudo usermod -aG docker ec2-user
 
 # Download RKE
 sudo wget -O /usr/local/bin/rke \
-https://github.com/rancher/rke/releases/download/v1.3.1/rke_linux-amd64
+https://github.com/rancher/rke/releases/download/v1.3.12/rke_linux-amd64
 sudo chmod +x /usr/local/bin/rke
 
 # Download kubectl

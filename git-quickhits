@@ -1,0 +1,11 @@
+# Add local directory to GitHub
+Create new remote entry in GitHub
+in the local diretory
+  git init
+  git add .
+  git commit -m "Initial Commit"
+  git remote add origin <remote repo>
+  git remove -v #verifies URL
+  git push origin master
+
+if you use 2fa then ensure you use your login name & personal token to login
