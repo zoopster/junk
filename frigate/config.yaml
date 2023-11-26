@@ -1,0 +1,26 @@
+mqtt:
+  #  enabled: False <-- enabled by default
+  host: <ipaddr>
+detectors:
+  coral:
+    type: edgetpu
+    device: usb
+ffmpeg:
+  hwaccel_args: preset-vaapi
+record:
+  enabled: True
+  events:
+    retain:
+      default: 7
+cameras:
+  backyard:
+    ffmpeg:
+      inputs:
+        - path: rtsp://username:password@ipaddr # <----- The stream you want to use for detection
+          roles:
+            - detect
+            - record
+    detect:
+      enabled: true # <---- disable detection until you have a working camera feed
+      width: 3480 # <---- update for your camera's resolution
+      height: 2160 # <---- update for your camera's resolution
