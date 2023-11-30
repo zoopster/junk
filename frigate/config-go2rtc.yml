@@ -1,0 +1,61 @@
+# yaml-language-server: $schema=http://frigate_host:5000/api/config/schema.json
+# $PLUS-API-KEY 
+mqtt:
+  #  enabled: False
+  host: MQTT_HOST
+detectors:
+  coral:
+    type: edgetpu
+    device: usb
+ffmpeg:
+  hwaccel_args: preset-vaapi
+record:
+  enabled: True
+  events:
+    retain:
+      default: 7
+objects:
+  track:
+    - person
+    - dog
+    - car
+    - bicycle
+go2rtc:
+  streams:
+    camera1: rtsp://user:pass@CAMERA1/cam/realmonitor?channel=1&subtype=0
+    camera1_sub: rtsp://user:pass@CAMERA1/cam/realmonitor?channel=1&subtype=1
+    camera2: rtsp://user:pass@CAMERA2/cam/realmonitor?channel=1&subtype=0
+    camera2_sub: rtsp://user:passt@CAMERA2/cam/realmonitor?channel=1&subtype=1
+cameras:
+  camera1:
+    birdseye:
+      mode: objects
+    ffmpeg:
+      output_args:
+        record: preset-record-generic
+        detect: -threads 2 -f rawvideo -pix_fmt yuv420p
+      inputs:
+        - path: rtsp://127.0.0.1:8554/camera1 
+          input_args: preset-rtsp-restream
+          roles:
+            - record
+        - path: rtsp://127.0.0.1:8554/camera1_sub
+          input_args: preset-rtsp-restream
+          roles:
+            - detect
+  camera2:
+    birdseye:
+      mode: objects
+    ffmpeg:
+      output_args:
+        record: preset-record-generic
+        detect: -threads 2 -f rawvideo -pix_fmt yuv420p
+      inputs:
+        - path: rtsp://127.0.0.1:8554/camera2
+          input_args: preset-rtsp-restream
+          roles:
+            - record
+        - path: rtsp://127.0.0.1:8554/camera2_sub
+          input_args: preset-rtsp-restream
+          roles:
+            - detect
