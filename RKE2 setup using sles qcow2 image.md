@@ -13,7 +13,7 @@ disable firewall
 systemctl disable --now firewalld.service
 
 register with scc
-SUSEConnect -r INTERNAL-USE-ONLY-cdcd97774e4a3a01 <-- or whatever code you have
+SUSEConnect -r <code>
 
 reboot
 
